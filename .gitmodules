@@ -1,0 +1,9 @@
+[submodule "public/js/vendor/enyojs/bootplate"]
+	path = public/js/vendor/enyojs/bootplate
+	url = https://github.com/enyojs/bootplate.git
+[submodule "public/js/vendor/enyojs/canvas"]
+	path = public/js/vendor/enyojs/canvas
+	url = https://github.com/enyojs/canvas.git
+[submodule "public/js/vendor/enyojs/g11n"]
+	path = public/js/vendor/enyojs/g11n
+	url = https://github.com/enyojs/g11n.git

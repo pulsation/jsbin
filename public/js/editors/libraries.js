@@ -277,11 +277,19 @@ var libraries = [
             "http://enyojs.com/enyo-2.2.0/enyo.css",
             "http://enyojs.com/enyo-2.2.0/enyo.js",
             "http://enyojs.com/enyo-2.2.0/lib/layout/package.js",
-            "http://enyojs.com/enyo-2.2.0/lib/onyx/package.js",
-            "http://enyojs.com/enyo-2.2.0/lib/g11n/package.js",
-            "http://enyojs.com/enyo-2.2.0/lib/canvas/package.js"
+            "http://enyojs.com/enyo-2.2.0/lib/onyx/package.js"
         ],
         "label": "Enyo 2.2.0",
+        "group": "Enyo"
+    },
+    {
+        "url": [
+            "/js/vendor/enyojs/bootplate/enyo/enyo.js",
+            "/js/vendor/enyojs/bootplate/lib/layout/package.js",
+            "/js/vendor/enyojs/bootplate/lib/onyx/package.js",
+            "/js/vendor/enyojs/g11n/package.js"
+        ],
+        "label": "Enyo 2.2.0 offline",
         "group": "Enyo"
     },
     {
