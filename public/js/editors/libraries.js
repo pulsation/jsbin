@@ -284,6 +284,7 @@ var libraries = [
     },
     {
         "url": [
+            "/js/vendor/enyojs/bootplate/api/build/enyo.css",
             "/js/vendor/enyojs/bootplate/enyo/enyo.js",
             "/js/vendor/enyojs/bootplate/lib/layout/package.js",
             "/js/vendor/enyojs/bootplate/lib/onyx/package.js",
