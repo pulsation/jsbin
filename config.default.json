@@ -2,7 +2,7 @@
   "env": "development",
   "timezone": "UTC",
   "url": {
-    "host": "localhost:3000",
+    "host": "localhost:3001",
     "prefix": "/",
     "ssl": false,
     "static": false
@@ -11,7 +11,7 @@
   "store": {
     "adapter": "sqlite",
     "sqlite": {
-      "location": "/tmp/jsbin.db"
+      "location": "jsbin.db"
     },
     "mysql": {
       "host": "localhost",
