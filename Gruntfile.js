@@ -32,7 +32,7 @@ module.exports = function (grunt) {
       }
     }
 
-    child = exec(cmd, { maxBuffer: 1024*1024 }, function (err, stdout, stderr) {
+    child = exec(cmd, { maxBuffer: 4096*1024 }, function (err, stdout, stderr) {
       if (err) {
         grunt.log.writeln(err.message);
         process.exit(err.code);
