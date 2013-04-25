@@ -7,3 +7,12 @@
 [submodule "public/js/vendor/enyojs/g11n"]
 	path = public/js/vendor/enyojs/g11n
 	url = https://github.com/enyojs/g11n.git
+[submodule "public/js/vendor/dojo/dojo"]
+	path = public/js/vendor/dojo/dojo
+	url = https://github.com/dojo/dojo.git
+[submodule "public/js/vendor/dojo/dojox"]
+	path = public/js/vendor/dojo/dojox
+	url = https://github.com/dojo/dojox.git
+[submodule "public/js/vendor/dojo/dijit"]
+	path = public/js/vendor/dojo/dijit
+	url = https://github.com/dojo/dijit
