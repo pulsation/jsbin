@@ -6,7 +6,7 @@ if (/gist(\/.*)?\/\d+/.test(window.location.pathname) && (!sessionStorage.getIte
       window.gist = new Gist(window.location.pathname.replace(/.*?(\d+).*/, "$1"));
     });
   };
-  
+
   if (editors.ready) {
     loadGist();
   } else {

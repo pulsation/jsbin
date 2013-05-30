@@ -15,7 +15,7 @@ function htmlEntities(str) {
 function stringify(o, simple, visited) {
   var json = '', i, vi, type = '', parts = [], names = [], circular = false;
   visited = visited || [];
-  
+
   try {
     type = ({}).toString.call(o);
   } catch (e) { // only happens when typeof is protected (...randomly)
@@ -124,7 +124,7 @@ function post(cmd, blind, response /* passed in when echoing from remote console
   if (blind === undefined) {
     history.push(cmd);
     setHistory(history);
-  } 
+  }
 
   if ((cmd.match(commandPresent) || []).length > 1) {
     // split the command up in to blocks and internal commands and run sequentially
@@ -158,7 +158,7 @@ function post(cmd, blind, response /* passed in when echoing from remote console
   // In a setTimeout so that renderLivePreview has time for the iframe to load
   setTimeout(function () {
     response = response || run(cmd);
-    
+
     if (response !== undefined) {
       el.className = 'response';
       span.innerHTML = response[1];
@@ -177,9 +177,11 @@ function post(cmd, blind, response /* passed in when echoing from remote console
         try {
           // document.getElementsByTagName('a')[0].focus();
           if (jsbin.panels.focused.id === 'console') {
-            cursor.focus();
+            if (!jsbin.embed) {
+              cursor.focus();
+            }
             document.execCommand('selectAll', false, null);
-            document.execCommand('delete', false, null);          
+            document.execCommand('delete', false, null);
           }
         } catch (e) {}
       }
@@ -307,9 +309,9 @@ function loadDOM(url) {
   var doc = sandboxframe.contentWindow.document,
       script = document.createElement('script'),
       cb = 'loadDOM' + +new Date;
-      
+
   script.src = 'http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22' + encodeURIComponent(url) + '%22&format=xml&callback=' + cb;
-  
+
   window[cb] = function (yql) {
     if (yql.results.length) {
       var html = yql.results[0].replace(/type="text\/javascript"/ig,'type="x"').replace(/<body.*?>/, '').replace(/<\/body>/, '');
@@ -325,9 +327,9 @@ function loadDOM(url) {
     } catch (e) {}
 
   };
- 
+
   document.body.appendChild(script);
-  
+
   return "Loading url into DOM...";
 }
 
@@ -373,7 +375,7 @@ function about() {
 
 function setHistory(history) {
   if (typeof JSON == 'undefined') return;
-  
+
   try {
     // because FF with cookies disabled goes nuts, and because sometimes WebKit goes nuts too...
     sessionStorage.setItem('history', JSON.stringify(history));
@@ -382,9 +384,9 @@ function setHistory(history) {
 
 function getHistory() {
   var history = [''];
-  
+
   if (typeof JSON == 'undefined') return history;
-  
+
   try {
     // because FF with cookies disabled goes nuts, and because sometimes WebKit goes nuts too...
     history = JSON.parse(sessionStorage.getItem('history') || '[""]');
@@ -405,7 +407,7 @@ var exec = document.getElementById('exec'),
     sandbox = null,
     history = getHistory(),
     codeCompleteTimer = null,
-    fakeConsole = 'window.top._console',
+    fakeConsole = 'window.parent._console',
     libraries = {
         jquery: 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js',
         prototype: 'http://ajax.googleapis.com/ajax/libs/prototype/1/prototype.js',
@@ -423,7 +425,7 @@ var exec = document.getElementById('exec'),
     commandPresent = /:((?:help|about|load|clear|reset|wait|history)(?:.*))\n/gi,
     commands = {
       history: showHistory,
-      help: showhelp, 
+      help: showhelp,
       about: about,
       load: load,
       wait: function () {
@@ -447,7 +449,8 @@ var exec = document.getElementById('exec'),
     enableCC = navigator.userAgent.indexOf('AppleWebKit') !== -1 && navigator.userAgent.indexOf('Mobile') === -1 || navigator.userAgent.indexOf('OS 5_') !== -1;
 
 if (enableCC) {
-  exec.parentNode.innerHTML = '<div autofocus id="exec" autocapitalize="off" spellcheck="false"><span id="cursor" spellcheck="false" autocapitalize="off" autocorrect="off"' + (iOSMobile ? '' : ' contenteditable') + '></span></div>';
+  var autofocus = jsbin.embed ? '' : 'autofocus';
+  exec.parentNode.innerHTML = '<div ' + autofocus + ' id="exec" autocapitalize="off" spellcheck="false"><span id="cursor" spellcheck="false" autocapitalize="off" autocorrect="off"' + (iOSMobile ? '' : ' contenteditable') + '></span></div>';
   exec = document.getElementById('exec');
   cursor = document.getElementById('cursor');
 } else {
@@ -469,16 +472,16 @@ if (enableCC && iOSMobile) {
 // if (!('autofocus' in document.createElement('input'))) exec.focus();
 
 function whichKey(event) {
-  var keys = {38:1, 40:1, Up:38, Down:40, Enter:10, 'U+0009':9, 'U+0008':8, 'U+0190':190, 'Right':39, 
+  var keys = {38:1, 40:1, Up:38, Down:40, Enter:10, 'U+0009':9, 'U+0008':8, 'U+0190':190, 'Right':39,
       // these two are ignored
-      'U+0028': 57, 'U+0026': 55 }; 
+      'U+0028': 57, 'U+0026': 55 };
   return keys[event.keyIdentifier] || event.which || event.keyCode;
 }
 
 function setCursorTo(str) {
   str = enableCC ? cleanse(str) : str;
   exec.value = str;
-  
+
   if (enableCC) {
     document.execCommand('selectAll', false, null);
     document.execCommand('delete', false, null);
@@ -496,11 +499,11 @@ function setCursorTo(str) {
 //   if (event.target.nodeName == 'A' && event.target.className == 'permalink') {
 //     var command = decodeURIComponent(event.target.search.substr(1));
 //     setCursorTo(command);
-    
+
 //     if (liveHistory) {
 //       window.history.pushState(command, command, event.target.href);
 //     }
-    
+
 //     return false;
 //   }
 // };
@@ -517,7 +520,7 @@ exec.onkeyup = function (event) {
     codeCompleteTimer = setTimeout(function () {
       codeComplete(event);
     }, 200);
-  } 
+  }
 };
 
 if (enableCC) {
@@ -545,8 +548,8 @@ function findNode(list, node) {
 
 exec.onkeydown = function (event) {
   event = event || window.event;
-  var keys = {38:1, 40:1}, 
-      wide = body.className == 'large', 
+  var keys = {38:1, 40:1},
+      wide = body.className == 'large',
       which = whichKey(event);
 
   if (typeof which == 'string') which = which.replace(/\/U\+/, '\\u');
@@ -557,7 +560,7 @@ exec.onkeydown = function (event) {
       if (enableCC && window.getSelection) {
         window.selObj = window.getSelection();
         var selRange = selObj.getRangeAt(0);
-        
+
         cursorPos =  findNode(selObj.anchorNode.parentNode.childNodes, selObj.anchorNode) + selObj.anchorOffset;
         var value = exec.value,
             firstnl = value.indexOf('\n'),
@@ -571,14 +574,14 @@ exec.onkeydown = function (event) {
           }
         }
       }
-      
+
       if (which == 38) { // cycle up
         pos--;
         if (pos < 0) pos = 0; //history.length - 1;
       } else if (which == 40) { // down
         pos++;
         if (pos >= history.length) pos = history.length; //0;
-      } 
+      }
       if (history[pos] != undefined && history[pos] !== '') {
         removeSuggestion();
         setCursorTo(history[pos])
@@ -623,7 +626,7 @@ if (enableCC && iOSMobile) {
   fakeInput.onkeydown = function (event) {
     removeSuggestion();
     var which = whichKey(event);
-    
+
     if (which == 13 || which == 10) {
       post(this.value);
       this.value = '';
@@ -640,7 +643,7 @@ if (enableCC && iOSMobile) {
       codeCompleteTimer = setTimeout(function () {
         codeComplete(event);
       }, 200);
-    } 
+    }
   };
 
   var fakeInputFocused = false;
@@ -675,15 +678,15 @@ if (enableCC && iOSMobile) {
 function completeCode(focus) {
   var tmp = exec.textContent, l = tmp.length;
   removeSuggestion();
-  
+
   cursor.innerHTML = tmp;
   ccPosition = false;
-  
+
   // daft hack to move the focus elsewhere, then back on to the cursor to
   // move the cursor to the end of the text.
   document.getElementsByTagName('a')[0].focus();
   cursor.focus();
-  
+
   var range, selection;
   if (document.createRange) {//Firefox, Chrome, Opera, Safari, IE 9+
     range = document.createRange();//Create a range (a range is a like the selection but invisible)
@@ -711,14 +714,14 @@ form.onsubmit = function (event) {
 document.onkeydown = function (event) {
   event = event || window.event;
   var which = event.which || event.keyCode;
-  
+
   if (event.shiftKey && event.metaKey && which == 8) {
     output.innerHTML = '';
     cursor.focus();
   } else if (event.target == output.parentNode && which == 32) { // space
     output.parentNode.scrollTop += 5 + output.parentNode.offsetHeight * (event.shiftKey ? -1 : 1);
   }
-  
+
   // return changeView(event);
 };
 
@@ -728,26 +731,26 @@ exec.onclick = function () {
 
 function getProps(cmd, filter) {
   var surpress = {}, props = [];
-  
+
   if (!ccCache[cmd]) {
     try {
       // surpress alert boxes because they'll actually do something when we're looking
       // up properties inside of the command we're running
       surpress.alert = sandboxframe.contentWindow.alert;
       sandboxframe.contentWindow.alert = function () {};
-      
+
       // loop through all of the properties available on the command (that's evaled)
       ccCache[cmd] = sandboxframe.contentWindow.eval('console.props(' + cmd + ')').sort();
-      
+
       // return alert back to it's former self
       delete sandboxframe.contentWindow.alert;
     } catch (e) {
       ccCache[cmd] = [];
     }
-    
-    // if the return value is undefined, then it means there's no props, so we'll 
+
+    // if the return value is undefined, then it means there's no props, so we'll
     // empty the code completion
-    if (ccCache[cmd][0] == 'undefined') ccOptions[cmd] = [];    
+    if (ccCache[cmd][0] == 'undefined') ccOptions[cmd] = [];
     ccPosition = 0;
     props = ccCache[cmd];
   } else if (filter) {
@@ -762,8 +765,8 @@ function getProps(cmd, filter) {
   } else {
     props = ccCache[cmd];
   }
-  
-  return props; 
+
+  return props;
 }
 
 function codeComplete(event) {
@@ -778,7 +781,7 @@ function codeComplete(event) {
     if (cmd.substr(-1) == '.') {
       // get the command without the '.' so we can eval it and lookup the properties
       cmd = cmd.substr(0, cmd.length - 1);
-      
+
       // returns an array of all the properties from the command
       props = getProps(cmd);
     } else {
@@ -796,11 +799,11 @@ function codeComplete(event) {
           } else {
             ccPosition = ccPosition == props.length - 1 ? 0 : ccPosition+1;
           }
-        }      
+        }
       } else {
         ccPosition = 0;
       }
-    
+
       if (ccPosition === false) {
         completeCode();
       } else {
@@ -809,7 +812,7 @@ function codeComplete(event) {
           cc = document.createElement('span');
           cc.className = 'suggest';
           exec.appendChild(cc);
-        } 
+        }
 
         cursor.nextSibling.innerHTML = props[ccPosition];
         exec.value = exec.textContent;
@@ -822,11 +825,11 @@ function codeComplete(event) {
   } else {
     ccPosition = false;
   }
-  
+
   if (ccPosition === false && cursor.nextSibling) {
     removeSuggestion();
   }
-  
+
   exec.value = exec.textContent;
 }
 
@@ -879,7 +882,7 @@ var jsconsole = {
       }
     };
 
-    getProps('window'); // cache 
+    getProps('window'); // cache
   },
   _onloadQueue: [],
   onload: function (fn) {
@@ -890,7 +893,7 @@ var jsconsole = {
       for (; i < length; i++) {
         this._onloadQueue[i].call(this);
       }
-      this._onloadQueue = [];      
+      this._onloadQueue = [];
     } else if (fn) { // if callback and ready - run callback
       fn.call(this);
     }
@@ -1043,7 +1046,7 @@ function upgradeConsolePanel(console) {
       // setTimeout because the renderLivePreview creates the iframe after a timeout
       setTimeout(function () {
         // jsconsole.setSandbox($live.find('iframe')[0]);
-        if (editors.console.ready) jsconsole.focus();
+        if (editors.console.ready && !jsbin.embed) jsconsole.focus();
       }, 0);
     };
     console.settings.hide = function () {
